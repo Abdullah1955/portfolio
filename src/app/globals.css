@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050507;
+  --background: #08080a;
   --foreground: #f4f4f6;
-  --muted: #9a9aa8;
+  --muted: #93909c;
   --border: rgba(255, 255, 255, 0.09);
-  --accent-1: #818cf8; /* indigo-400 */
-  --accent-2: #22d3ee; /* cyan-400 */
-  --accent-3: #c084fc; /* purple-400 */
+  --accent-1: #7c86f2; /* indigo, slightly muted */
+  --accent-2: #22c3dd; /* cyan, slightly muted */
+  --accent-3: #b073e8; /* purple, slightly muted */
 }
 
 @theme inline {
@@ -101,7 +101,48 @@ body {
 .blob {
   position: absolute;
   border-radius: 999px;
-  filter: blur(90px);
-  opacity: 0.35;
+  filter: blur(100px);
+  opacity: 0.28;
   pointer-events: none;
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+}
+
+@keyframes drift {
+  0%, 100% { margin: 0; }
+  50% { margin: 18px 0 0 14px; }
+}
+.drift-1 { animation: drift 14s ease-in-out infinite; }
+.drift-2 { animation: drift 17s ease-in-out infinite 2s; }
+.drift-3 { animation: drift 20s ease-in-out infinite 1s; }
+
+.grain {
+  position: absolute;
+  inset: -10%;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 100% at 50% 30%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.spotlight {
+  position: fixed;
+  z-index: 1;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(124, 134, 242, 0.1), transparent 68%);
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 40%;
+  transition: left 0.25s ease-out, top 0.25s ease-out;
+  will-change: left, top;
 }

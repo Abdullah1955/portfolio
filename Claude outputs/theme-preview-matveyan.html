@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Instrument theme concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#09090b;
+    --grain-op:0.05;
+    --ink:#f1efe8;
+    --muted:#87847a;
+    --muted-dim:#514f48;
+    --line:rgba(241,239,232,0.10);
+    --line-strong:rgba(241,239,232,0.22);
+    --bronze:#b99a6b;
+    --bronze-dim:#7a6647;
+    --good:#7cc47f;
+    --bad:#d97a6c;
+    --glow:#3fc6e0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Archivo',-apple-system,sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--bronze); color:#0c0b09; }
+
+  /* film grain */
+  .grain{
+    position:fixed; inset:0; z-index:50; pointer-events:none; opacity:var(--grain-op); mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .rays{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(70% 55% at 50% 0%, rgba(185,154,107,0.10), transparent 60%),
+      radial-gradient(50% 40% at 15% 100%, rgba(63,198,224,0.06), transparent 60%);
+  }
+
+  /* outer instrument frame */
+  .frame{ position:fixed; inset:14px; border:1px solid var(--line); z-index:40; pointer-events:none; }
+  .tick{ position:fixed; width:9px; height:9px; z-index:41; pointer-events:none; }
+  .tick::before,.tick::after{ content:""; position:absolute; background:var(--line-strong); }
+  .tick::before{ width:9px; height:1px; top:4px; left:0; }
+  .tick::after{ width:1px; height:9px; left:4px; top:0; }
+  .tick.tl{ top:10px; left:10px; } .tick.tr{ top:10px; right:10px; }
+  .tick.bl{ bottom:10px; left:10px; } .tick.br{ bottom:10px; right:10px; }
+
+  .rail{ position:fixed; left:24px; top:96px; bottom:96px; width:1px; background:var(--line); z-index:41; }
+  .rail-dot{ position:absolute; left:-2px; width:5px; height:5px; border-radius:50%; background:var(--bronze); box-shadow:0 0 8px rgba(185,154,107,0.7); transition:top .08s linear; }
+
+  /* nav */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:45;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 34px; background:linear-gradient(180deg, rgba(9,9,11,0.9), transparent);
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:0.02em; font-size:0.95rem; }
+  .logo .bars{ display:flex; gap:2px; }
+  .logo .bars span{ width:3px; height:14px; background:var(--ink); display:inline-block; }
+  .logo .bars span:nth-child(2){ height:18px; }
+  nav{ display:flex; gap:26px; }
+  nav a{
+    position:relative; color:var(--muted); text-decoration:none; font-size:0.72rem; font-weight:600;
+    letter-spacing:0.08em; text-transform:uppercase; transition:color .2s;
+  }
+  nav a:hover{ color:var(--ink); }
+  nav a::after{ content:""; position:absolute; top:-6px; right:-7px; width:4px; height:4px; border-top:1px solid var(--muted-dim); border-right:1px solid var(--muted-dim); }
+
+  /* hero */
+  .hero{
+    position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:140px 24px 120px; z-index:2;
+  }
+  .medallion{
+    position:absolute; border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #3a372f, #131210 72%);
+    border:1px solid rgba(255,255,255,0.06);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 20px 40px rgba(0,0,0,0.5);
+    will-change: transform;
+  }
+  .medallion svg{ opacity:0.8; }
+  .medallion.m1{ width:118px; height:118px; top:10%; left:12%; }
+  .medallion.m2{ width:150px; height:150px; top:6%; right:10%; }
+  .medallion.m3{ width:96px; height:96px; top:56%; left:6%; }
+  .medallion.m4{ width:132px; height:132px; bottom:12%; right:16%; }
+  .medallion.m5{ width:78px; height:78px; bottom:22%; left:24%; }
+  .medallion.m6{ width:70px; height:70px; top:30%; right:26%; }
+
+  @keyframes drift{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(6px,-10px); }
+  }
+  .medallion.m1{ animation: drift 9s ease-in-out infinite; }
+  .medallion.m2{ animation: drift 11s ease-in-out infinite 1s; }
+  .medallion.m3{ animation: drift 8s ease-in-out infinite .5s; }
+  .medallion.m4{ animation: drift 10s ease-in-out infinite 2s; }
+  .medallion.m5{ animation: drift 7.5s ease-in-out infinite 1.5s; }
+  .medallion.m6{ animation: drift 12s ease-in-out infinite .8s; }
+
+  .mark{ display:flex; gap:3px; margin-bottom:26px; }
+  .mark span{ width:4px; height:16px; background:var(--muted); display:inline-block; }
+  .mark span:nth-child(2){ height:20px; background:var(--ink); }
+
+  h1{
+    position:relative; z-index:3; font-size:clamp(2rem,5.2vw,3.6rem); line-height:1.06; font-weight:700;
+    letter-spacing:-0.01em; margin:0 0 20px; text-wrap:balance; text-transform:uppercase;
+  }
+  h1 b{ font-weight:800; }
+  h1 .x{ font-weight:400; color:var(--muted); padding:0 .12em; }
+  .sub{ position:relative; z-index:3; max-width:46ch; color:var(--muted); font-size:0.98rem; line-height:1.6; margin:0 0 34px; }
+
+  .cta{
+    position:relative; z-index:3; display:inline-flex; padding:14px 30px; border:1px solid var(--line-strong);
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink); text-decoration:none;
+  }
+  .cta-wrap{ position:relative; z-index:3; }
+  .cta-wrap .tick{ position:absolute; }
+  .cta-wrap .tick.tl{ top:-1px; left:-1px; } .cta-wrap .tick.tr{ top:-1px; right:-1px; }
+  .cta-wrap .tick.bl{ bottom:-1px; left:-1px; } .cta-wrap .tick.br{ bottom:-1px; right:-1px; }
+
+  /* bottom-left quote card */
+  .quote{
+    position:fixed; left:34px; bottom:28px; z-index:44; display:flex; align-items:center; gap:12px; max-width:280px;
+  }
+  .quote .mono{
+    width:34px; height:34px; border-radius:50%; background:linear-gradient(145deg,#2a2823,#131210);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--bronze); flex:none;
+  }
+  .quote p{ margin:0; font-size:0.76rem; color:var(--muted); line-height:1.35; }
+
+  /* ticker */
+  .ticker{ position:fixed; left:34px; bottom:78px; z-index:44; display:flex; gap:16px; }
+  .pill{
+    display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    padding:7px 12px; border:1px solid var(--line); background:rgba(255,255,255,0.02);
+  }
+  .pill .dot{ width:6px; height:6px; border-radius:50%; }
+  .pill b{ color:var(--ink); font-weight:500; }
+  .pill .delta.good{ color:var(--good); } .pill .delta.bad{ color:var(--bad); }
+
+  /* scroll cue */
+  .scrollcue{
+    position:fixed; left:50%; bottom:30px; transform:translateX(-50%); z-index:44;
+    display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:0.66rem;
+    letter-spacing:0.12em; color:var(--muted); text-transform:uppercase;
+  }
+  .scrollcue .chev{ animation:bob 1.6s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0); opacity:.5;} 50%{ transform:translateY(4px); opacity:1;} }
+
+  /* HUD */
+  .hud{
+    position:fixed; right:34px; bottom:28px; z-index:44; text-align:right;
+    font-family:'IBM Plex Mono',monospace; font-size:0.66rem; color:var(--muted-dim); line-height:1.7;
+  }
+  .hud b{ color:var(--muted); font-weight:500; }
+
+  /* ---- example project section ---- */
+  .project{ position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:120px 34px 160px; }
+  .project-grid{ display:grid; grid-template-columns:0.85fr 1.15fr; gap:50px; align-items:center; }
+  .p-label{ font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--bronze); margin:0 0 16px; }
+  .p-title{ font-size:2.2rem; font-weight:800; text-transform:uppercase; letter-spacing:-0.01em; margin:0 0 16px; text-wrap:balance; }
+  .p-desc{ color:var(--muted); font-size:0.95rem; line-height:1.65; max-width:42ch; margin:0 0 30px; }
+  .p-btn{
+    position:relative; display:inline-flex; padding:12px 24px; border:1px solid var(--line-strong);
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink);
+  }
+  .glow-panel{
+    position:relative; border-radius:14px; padding:36px;
+    background:radial-gradient(120% 130% at 20% 0%, rgba(63,198,224,0.22), rgba(9,9,11,0.4) 55%), #0d1417;
+    border:1px solid rgba(63,198,224,0.25);
+    min-height:340px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .watermark{
+    position:absolute; font-size:5rem; font-weight:800; color:rgba(255,255,255,0.05); letter-spacing:-0.02em;
+    bottom:10px; left:20px; white-space:nowrap;
+  }
+  .browser{
+    position:relative; width:100%; max-width:420px; background:#0b1013; border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px; overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.55);
+  }
+  .browser .bar{ display:flex; gap:6px; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .browser .bar span{ width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.15); }
+  .browser .body{ padding:18px; display:flex; flex-direction:column; gap:10px; }
+  .browser .row{ height:10px; border-radius:3px; background:rgba(255,255,255,0.06); }
+  .browser .row.w60{ width:60%; } .browser .row.w40{ width:40%; } .browser .row.w80{ width:80%; }
+  .browser .chip-line{ display:flex; gap:8px; margin-top:6px; }
+  .browser .chip-line span{ padding:5px 10px; border-radius:999px; border:1px solid rgba(63,198,224,0.35); color:#8fe3f2; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; }
+
+  /* footer marquee */
+  .marquee-wrap{ position:relative; z-index:2; border-top:1px solid var(--line); padding:34px 0 56px; overflow:hidden; }
+  .marquee{ display:flex; width:200%; animation:scroll 18s linear infinite; }
+  .marquee span{
+    font-size:6vw; font-weight:800; text-transform:uppercase; letter-spacing:-0.02em; color:transparent;
+    -webkit-text-stroke:1px rgba(241,239,232,0.5); white-space:nowrap; padding-right:0.4em;
+  }
+  @keyframes scroll{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+
+  @media (max-width:860px){
+    .project-grid{ grid-template-columns:1fr; }
+    .ticker, .quote{ display:none; }
+    header{ padding:18px 20px; }
+    nav{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="grain"></div>
+  <div class="rays"></div>
+  <div class="frame"></div>
+  <div class="tick tl"></div><div class="tick tr"></div><div class="tick bl"></div><div class="tick br"></div>
+  <div class="rail"><div class="rail-dot" id="railDot"></div></div>
+
+  <header>
+    <div class="logo"><span class="bars"><span></span><span></span><span></span></span> M.ABDULLAH</div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="heroSection">
+    <div class="medallion m1" data-depth="18"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfcac0" stroke-width="1.4"><path d="M12 2 L22 20 L2 20 Z"/></svg></div>
+    <div class="medallion m2" data-depth="28"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#cfcac0" stroke-width="1.3"><path d="M12 3v18M3 12h18"/></svg></div>
+    <div class="medallion m3" data-depth="14"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#cfcac0" stroke-width="1.4"><rect x="4" y="4" width="16" height="16" rx="3"/></svg></div>
+    <div class="medallion m4" data-depth="24"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#cfcac0" stroke-width="1.3"><path d="M4 17l6-6 4 4 6-8"/></svg></div>
+    <div class="medallion m5" data-depth="10"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#cfcac0" stroke-width="1.5"><circle cx="12" cy="12" r="8"/></svg></div>
+    <div class="medallion m6" data-depth="20"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#cfcac0" stroke-width="1.4"><path d="M7 7l10 10M17 7L7 17"/></svg></div>
+
+    <div class="mark"><span></span><span></span><span></span></div>
+    <h1>Code <span class="x">&times;</span> <b>Design</b> for products<br/>that actually ship</h1>
+    <p class="sub">I build fast, AI-assisted web applications — from interface to deployment — for teams who'd rather ship this quarter than next.</p>
+    <div class="cta-wrap">
+      <div class="tick tl"></div><div class="tick tr"></div><div class="tick bl"></div><div class="tick br"></div>
+      <a href="#contact" class="cta">Write on WhatsApp</a>
+    </div>
+  </section>
+
+  <div class="quote">
+    <div class="mono">MA</div>
+    <p>I turn vague requirements into interfaces that hold up in production.</p>
+  </div>
+
+  <div class="ticker">
+    <div class="pill"><span class="dot" style="background:var(--good);"></span>BUILD <b>PASSING</b></div>
+    <div class="pill">STACK <b>REACT / NEXT</b></div>
+    <div class="pill">STATUS <b>AVAILABLE</b> <span class="delta good">&bull;</span></div>
+  </div>
+
+  <div class="scrollcue"><span class="chev">&darr;</span> Scroll</div>
+
+  <div class="hud">
+    CURSOR X: <b id="cx">000</b> &nbsp; CURSOR Y: <b id="cy">000</b><br/>
+    SCROLL: <b id="sc">0.000</b> &nbsp; TIME: <b id="tm">00.0S</b>
+  </div>
+
+  <section class="project" id="work">
+    <div class="project-grid">
+      <div>
+        <p class="p-label">Web App &middot; Case Preview</p>
+        <h2 class="p-title">Portfolio Rebuild</h2>
+        <p class="p-desc">A freelance client site rebuilt from a static template into a fast, animated Next.js application with a full design system.</p>
+        <div class="cta-wrap" style="display:inline-block;">
+          <div class="tick tl"></div><div class="tick tr"></div><div class="tick bl"></div><div class="tick br"></div>
+          <span class="p-btn">View Case</span>
+        </div>
+      </div>
+      <div class="glow-panel">
+        <span class="watermark">NEXT.JS</span>
+        <div class="browser">
+          <div class="bar"><span></span><span></span><span></span></div>
+          <div class="body">
+            <div class="row w60"></div>
+            <div class="row w40"></div>
+            <div class="row w80"></div>
+            <div class="chip-line"><span>React</span><span>Tailwind</span><span>Framer</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <span>MUHAMMAD ABDULLAH &nbsp; MUHAMMAD ABDULLAH &nbsp; </span>
+      <span>MUHAMMAD ABDULLAH &nbsp; MUHAMMAD ABDULLAH &nbsp; </span>
+    </div>
+  </div>
+
+<script>
+  // mouse parallax on medallions
+  const medallions = document.querySelectorAll('.medallion');
+  const hero = document.getElementById('heroSection');
+  let mx = 0, my = 0;
+  window.addEventListener('mousemove', (e) => {
+    const cx = document.getElementById('cx');
+    const cy = document.getElementById('cy');
+    if (cx) cx.textContent = String(e.clientX).padStart(3,'0');
+    if (cy) cy.textContent = String(e.clientY).padStart(3,'0');
+    const rect = hero.getBoundingClientRect();
+    mx = (e.clientX - rect.width/2) / rect.width;
+    my = (e.clientY - rect.height/2) / rect.height;
+    medallions.forEach(m => {
+      const depth = parseFloat(m.dataset.depth) || 15;
+      m.style.transform = `translate(${mx*depth}px, ${my*depth}px)`;
+    });
+  });
+
+  // scroll HUD + rail dot
+  const railDot = document.getElementById('railDot');
+  const scEl = document.getElementById('sc');
+  function onScroll(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? window.scrollY / max : 0;
+    if (scEl) scEl.textContent = pct.toFixed(3);
+    if (railDot) railDot.style.top = (pct*100) + '%';
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+
+  // timer
+  const t0 = performance.now();
+  const tmEl = document.getElementById('tm');
+  setInterval(() => {
+    const s = (performance.now() - t0) / 1000;
+    if (tmEl) tmEl.textContent = s.toFixed(1) + 'S';
+  }, 100);
+</script>
+
+</body>
+</html>

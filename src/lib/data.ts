@@ -64,6 +64,11 @@ export const experience = [
 
 export const education = [
   {
+    title: "BSAI (BS Artificial Intelligence)",
+    place: "Dawood University of Engineering and Technology",
+    period: "2026 — 2030",
+  },
+  {
     title: "Software Engineering Program",
     place: "Aptech Metro Star Gate Center",
     period: "Current",
