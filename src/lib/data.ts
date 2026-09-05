@@ -96,16 +96,19 @@ export type Project = {
   description: string;
   tags: string[];
   href?: string;
+  highlight?: string;
   placeholder?: boolean;
 };
 
 export const projects: Project[] = [
   {
-    title: "EPC/CAR Project",
+    title: "EPC Japan Cars — Vehicle Export Platform",
     description:
-      "TODO — add a 1-2 sentence description of what this project does, your role, and the stack used.",
-    tags: ["TODO: stack"],
-    placeholder: true,
+      "A full-stack car export platform for a Japan-based used vehicle exporter — a public catalog/marketing site plus a complete admin back office for inventory, leads, and site content, with role-based access for admin vs. staff accounts.",
+    tags: ["Next.js 16", "Prisma", "MySQL", "Tailwind CSS", "Framer Motion", "JWT Auth"],
+    href: "https://epcjapancars.com/",
+    highlight:
+      "Standout feature: a form-driven invoice generator that renders a live, pixel-accurate PDF preview (via html2canvas + jsPDF) matching the company's exact letterhead, saved to a searchable invoice history.",
   },
   {
     title: "Add your next project",
