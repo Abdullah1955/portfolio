@@ -27,6 +27,7 @@ export default function BackgroundFX() {
   return (
     <div aria-hidden className="fixed inset-0 -z-10 overflow-hidden">
       <div className="absolute inset-0 noise-grid" />
+      <div className="rays" />
       <div className="grain" />
       <div
         ref={(el) => {

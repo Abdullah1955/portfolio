@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import BackgroundFX from "@/components/BackgroundFX";
+import InstrumentChrome from "@/components/InstrumentChrome";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <>
       <BackgroundFX />
+      <InstrumentChrome />
       <Navbar />
       <main>
         <Hero />

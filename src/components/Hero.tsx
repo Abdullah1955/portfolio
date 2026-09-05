@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowDown, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./BrandIcons";
 import { profile, stats } from "@/lib/data";
 
@@ -24,7 +24,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="inline-flex items-center gap-2 text-xs font-medium tracking-wide uppercase text-muted glass px-3 py-1.5 rounded-full mb-6"
+          className="inline-flex items-center gap-2 text-[0.7rem] font-semibold tracking-widest uppercase text-muted glass px-4 py-2 mb-6"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -73,15 +73,20 @@ export default function Hero() {
           transition={{ delay: 0.4, duration: 0.6 }}
           className="mt-8 flex flex-wrap items-center justify-center gap-3"
         >
-          <a
-            href="#projects"
-            className="px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-85 transition-opacity"
-          >
-            View my work
-          </a>
+          <div className="tick-box">
+            <div className="tick tl" /><div className="tick tr" /><div className="tick bl" /><div className="tick br" />
+            <a
+              href="#projects"
+              className="inline-block px-6 py-3 bg-foreground text-background text-xs font-semibold tracking-widest uppercase hover:opacity-85 transition-opacity"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              View my work
+            </a>
+          </div>
           <a
             href="#contact"
-            className="px-5 py-2.5 rounded-full glass glass-hover text-sm font-semibold"
+            className="px-6 py-3 glass glass-hover text-xs font-semibold tracking-widest uppercase"
+            style={{ fontFamily: "var(--font-mono)" }}
           >
             Get in touch
           </a>
@@ -89,7 +94,7 @@ export default function Hero() {
             <a
               href={`mailto:${profile.email}`}
               aria-label="Email"
-              className="p-2.5 rounded-full glass glass-hover"
+              className="p-2.5 glass glass-hover"
             >
               <Mail size={18} />
             </a>
@@ -97,7 +102,7 @@ export default function Hero() {
               href={profile.linkedin}
               target="_blank"
               aria-label="LinkedIn"
-              className="p-2.5 rounded-full glass glass-hover"
+              className="p-2.5 glass glass-hover"
             >
               <LinkedinIcon size={18} />
             </a>
@@ -105,7 +110,7 @@ export default function Hero() {
               href={profile.github}
               target="_blank"
               aria-label="GitHub"
-              className="p-2.5 rounded-full glass glass-hover"
+              className="p-2.5 glass glass-hover"
             >
               <GithubIcon size={18} />
             </a>
@@ -126,16 +131,6 @@ export default function Hero() {
           ))}
         </motion.div>
       </div>
-
-      <motion.a
-        href="#about"
-        animate={{ y: [0, 8, 0] }}
-        transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-        className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 items-center justify-center p-2 rounded-full glass"
-        aria-label="Scroll to About"
-      >
-        <ArrowDown size={16} />
-      </motion.a>
     </section>
   );
 }
